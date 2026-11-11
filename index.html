@@ -6,76 +6,183 @@
 <title>Emily Doing Role Plays Inside a Word Doc</title>
 <style>
   :root {
-    --bg: #f5f5f7;
-    --ink: #1d1d1f;
-    --soft: #6e6e73;
+    --bar: #185abd;
+    --canvas: #e8e8e8;
+    --chrome: #f7f7f7;
+    --chrome-line: #dedede;
+    --chrome-ink: #5c5c5c;
+    --page: #ffffff;
+    --ink: #1f1f1f;
+    --heading: #0f4761;
+    --active: #185abd;
+    --ui: Aptos, Calibri, "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    --display: "Aptos Display", Aptos, "Calibri Light", Calibri, "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #000;
-      --ink: #f5f5f7;
-      --soft: #86868b;
+      --canvas: #141414;
+      --chrome: #252525;
+      --chrome-line: #363636;
+      --chrome-ink: #b4b4b4;
+      --page: #222222;
+      --ink: #e8e8e8;
+      --heading: #8fb6ec;
+      --active: #8fb6ec;
     }
-    main .player { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08); }
   }
-  * { box-sizing: border-box; margin: 0; }
-  html, body { height: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--bg);
+    background: var(--canvas);
     color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: var(--ui);
     -webkit-font-smoothing: antialiased;
+    padding-bottom: 28px;
+  }
+
+  /* Window chrome */
+  .titlebar {
+    height: 36px;
+    background: var(--bar);
+    color: #fff;
+    font-size: 13px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6vh 5vw;
+    letter-spacing: 0.01em;
   }
-  main {
-    width: 100%;
-    max-width: 1120px;
+  .tabs {
+    height: 40px;
+    background: var(--chrome);
+    border-bottom: 1px solid var(--chrome-line);
+    display: flex;
+    align-items: stretch;
+    gap: 22px;
+    padding: 0 20px;
+    font-size: 13px;
+    color: var(--chrome-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    user-select: none;
   }
-  .player {
+  .tabs span {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+  }
+  .tabs .on {
+    color: var(--active);
+    font-weight: 600;
+    border-bottom-color: var(--active);
+  }
+
+  /* The page */
+  .canvas {
+    padding: 32px 20px 64px;
+  }
+  .page {
+    max-width: 960px;
+    aspect-ratio: 8.5 / 11;
+    margin: 0 auto;
+    background: var(--page);
+    padding: 84px 80px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10), 0 10px 30px rgba(0, 0, 0, 0.06);
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 27px;
+    line-height: 1.25;
+    color: var(--heading);
+    margin-bottom: 20px;
+  }
+  .video {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-    border-radius: 18px;
-    overflow: hidden;
     background: #000;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.18);
   }
-  .player iframe {
+  .video iframe {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     border: 0;
   }
-  h1 {
-    margin-top: 28px;
-    text-align: center;
-    font-size: 19px;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    color: var(--soft);
+  .caret {
+    margin-top: 14px;
+    height: 22px;
   }
-  @media (max-width: 600px) {
-    body { padding: 24px 16px; }
-    .player { border-radius: 12px; }
-    h1 { font-size: 16px; margin-top: 20px; }
+  .caret::before {
+    content: "";
+    display: inline-block;
+    width: 1.5px;
+    height: 20px;
+    background: var(--ink);
+    animation: blink 1.06s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .caret::before { animation: none; }
+  }
+
+  /* Status bar */
+  .status {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 28px;
+    background: var(--chrome);
+    border-top: 1px solid var(--chrome-line);
+    color: var(--chrome-ink);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+  }
+
+  @media (max-width: 640px) {
+    .tabs { gap: 16px; padding: 0 14px; }
+    .canvas { padding: 14px 10px 40px; }
+    .page { padding: 32px 24px; }
+    h1 { font-size: 20px; margin-bottom: 14px; }
   }
 </style>
 </head>
 <body>
-<main>
-  <div class="player">
-    <iframe
-      src="https://www.youtube-nocookie.com/embed/9ND6PYUZAts?rel=0&playsinline=1"
-      title="Emily Doing Role Plays Inside a Word Doc"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen></iframe>
+  <div class="titlebar">Role Plays.docx</div>
+  <nav class="tabs" aria-hidden="true">
+    <span>File</span>
+    <span class="on">Home</span>
+    <span>Insert</span>
+    <span>Draw</span>
+    <span>Design</span>
+    <span>Layout</span>
+    <span>References</span>
+    <span>Mailings</span>
+    <span>Review</span>
+    <span>View</span>
+  </nav>
+
+  <div class="canvas">
+    <main class="page">
+      <h1>Emily Doing Role Plays Inside a Word Doc</h1>
+      <div class="video">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/9ND6PYUZAts?rel=0&playsinline=1"
+          title="Emily Doing Role Plays Inside a Word Doc"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen></iframe>
+      </div>
+      <p class="caret" aria-hidden="true"></p>
+    </main>
   </div>
-  <h1>Emily Doing Role Plays Inside a Word Doc</h1>
-</main>
+
+  <footer class="status" aria-hidden="true">
+    <span>Page 1 of 1</span>
+    <span>100%</span>
+  </footer>
 </body>
 </html>
