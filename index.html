@@ -3,186 +3,497 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Emily Doing Role Plays Inside a Word Doc</title>
+<title>Emily Role Plays Inside a Word Doc</title>
+
+<!-- Link preview (iMessage, Slack, LinkedIn, etc.) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Emily Role Plays Inside a Word Doc">
+<meta property="og:url" content="https://lushin-inc.github.io/em-role-play-word-doc/">
+<meta property="og:image" content="https://lushin-inc.github.io/em-role-play-word-doc/assets/og.jpg">
+<meta property="og:image:secure_url" content="https://lushin-inc.github.io/em-role-play-word-doc/assets/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Emily Role Plays Inside a Word Doc">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Emily Role Plays Inside a Word Doc">
+<meta name="twitter:image" content="https://lushin-inc.github.io/em-role-play-word-doc/assets/og.jpg">
+<meta name="theme-color" content="#2c59b7" media="(max-width: 600px)">
+
 <style>
-  :root {
-    --bar: #185abd;
-    --canvas: #e8e8e8;
-    --chrome: #f7f7f7;
-    --chrome-line: #dedede;
-    --chrome-ink: #5c5c5c;
-    --page: #ffffff;
-    --ink: #1f1f1f;
-    --heading: #0f4761;
-    --active: #185abd;
-    --ui: Aptos, Calibri, "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    --display: "Aptos Display", Aptos, "Calibri Light", Calibri, "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  /* Sizes are in Word-window units (u). On a computer, 1u is half a pixel,
+     so the window is real Mac Word size at 100%, and it grows on big screens. */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: #ffffff;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
-      --canvas: #141414;
-      --chrome: #252525;
-      --chrome-line: #363636;
-      --chrome-ink: #b4b4b4;
-      --page: #222222;
-      --ink: #e8e8e8;
-      --heading: #8fb6ec;
-      --active: #8fb6ec;
+    body { background: #1c1c1e; }
+  }
+
+  .win {
+    --u: min(calc((100vw - 48px) / 1400), max(0.5px, calc((100vh - 48px) / 1898)));
+    width: calc(var(--u) * 1400);
+    height: min(calc(var(--u) * 1898), calc(100vh - 48px));
+    display: flex;
+    flex-direction: column;
+    border-radius: calc(var(--u) * 52);
+    overflow: hidden;
+    background: #f5f5f5;
+    box-shadow:
+      0 calc(var(--u) * 24) calc(var(--u) * 100) rgba(0, 0, 0, 0.42),
+      0 0 0 calc(var(--u) * 1) rgba(0, 0, 0, 0.16);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  @supports (height: 100dvh) {
+    body { min-height: 100dvh; }
+    .win {
+      --u: min(calc((100vw - 48px) / 1400), max(0.5px, calc((100dvh - 48px) / 1898)));
+      height: min(calc(var(--u) * 1898), calc(100dvh - 48px));
     }
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--canvas);
-    color: var(--ink);
-    font-family: var(--ui);
-    -webkit-font-smoothing: antialiased;
-    padding-bottom: 28px;
-  }
 
-  /* Window chrome */
-  .titlebar {
-    height: 36px;
-    background: var(--bar);
-    color: #fff;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    letter-spacing: 0.01em;
+  .el {
+    position: absolute;
+    left: calc(var(--u) * var(--x, 0));
+    top: calc(var(--u) * var(--y, 0));
+    width: calc(var(--u) * var(--w));
+    height: calc(var(--u) * var(--h));
   }
-  .tabs {
-    height: 40px;
-    background: var(--chrome);
-    border-bottom: 1px solid var(--chrome-line);
-    display: flex;
-    align-items: stretch;
-    gap: 22px;
-    padding: 0 20px;
-    font-size: 13px;
-    color: var(--chrome-ink);
+  .t {
+    position: absolute;
+    left: calc(var(--u) * var(--x));
+    top: calc(var(--u) * var(--cy));
+    transform: translateY(-50%);
+    font-size: calc(var(--u) * var(--fs));
+    line-height: 1;
     white-space: nowrap;
-    overflow: hidden;
-    user-select: none;
   }
-  .tabs span {
+  svg { overflow: visible; fill: none; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .sz { width: calc(var(--u) * var(--w)); height: calc(var(--u) * var(--h)); }
+
+  /* Title bar */
+  .titlebar {
+    position: relative;
+    flex: none;
+    height: calc(var(--u) * 76);
+    background: linear-gradient(90deg,
+      #2c59b7 0,
+      #2c59b7 calc(100% - var(--u) * 620),
+      #274fa3 calc(100% - var(--u) * 360),
+      #264d9f calc(100% - var(--u) * 170),
+      #2851a6 100%);
+    box-shadow: inset 0 calc(var(--u) * 2) 0 rgba(255, 255, 255, 0.45);
+  }
+  .light { border-radius: 50%; box-shadow: inset 0 0 0 calc(var(--u) * 1) rgba(0, 0, 0, 0.12); }
+  .light.red { background: #ec6765; }
+  .light.yellow { background: #f2ca44; }
+  .light.green { background: #65c466; }
+  .light.red::after {
+    content: "";
+    position: absolute;
+    left: 50%; top: 50%;
+    width: calc(var(--u) * 9);
+    height: calc(var(--u) * 9);
+    border-radius: 50%;
+    background: #763433;
+    transform: translate(-50%, -50%);
+  }
+  .autosave {
+    color: rgba(255, 255, 255, 0.86);
+    font-weight: 500;
+    transform: translate(-100%, -50%);
+  }
+  .toggle {
+    border-radius: 999px;
+    background: #2850a4;
+    box-shadow: inset 0 0 0 calc(var(--u) * 2) rgba(225, 233, 248, 0.75);
+  }
+  .toggle::after {
+    content: "";
+    position: absolute;
+    left: calc(var(--u) * 5);
+    top: calc(var(--u) * 5);
+    width: calc(var(--u) * 42);
+    height: calc(var(--u) * 26);
+    border-radius: 999px;
+    background: #ffffff;
+  }
+  .wi { stroke: #ffffff; }
+  .rgroup {
+    position: absolute;
+    right: calc(var(--u) * 16);
+    top: calc(var(--u) * 12);
+    height: calc(var(--u) * 56);
     display: flex;
     align-items: center;
-    border-bottom: 2px solid transparent;
+    gap: calc(var(--u) * 16);
   }
-  .tabs .on {
-    color: var(--active);
-    font-weight: 600;
-    border-bottom-color: var(--active);
+  .rgroup .comment { margin-right: calc(var(--u) * 12); }
+  .pill {
+    height: calc(var(--u) * 56);
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    font-size: calc(var(--u) * 26);
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .pill.editing {
+    color: #ffffff;
+    padding: 0 calc(var(--u) * 14) 0 calc(var(--u) * 20);
+    background: linear-gradient(90deg, #3d6ede, #3a68d3);
+    box-shadow: inset 0 0 0 calc(var(--u) * 2) rgba(124, 186, 241, 0.9);
+  }
+  .pill.editing .label { margin: 0 calc(var(--u) * 20) 0 calc(var(--u) * 14); }
+  .pill.share {
+    color: #242424;
+    padding: 0 calc(var(--u) * 14) 0 calc(var(--u) * 22);
+    background: linear-gradient(90deg, #b5c4e4, #acbad9);
+    box-shadow: inset 0 0 0 calc(var(--u) * 2) rgba(214, 230, 247, 0.95);
+  }
+  .pill.share .label { margin: 0 calc(var(--u) * 20) 0 calc(var(--u) * 11); }
+  .pill.share svg { stroke: #242424; }
+  .circle {
+    width: calc(var(--u) * 56);
+    height: calc(var(--u) * 56);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+  }
+  .circle.search {
+    background: linear-gradient(90deg, #3d6edd, #3968d1);
+    box-shadow: inset 0 0 0 calc(var(--u) * 2) rgba(124, 185, 240, 0.9);
+  }
+  .circle.avatar {
+    background: #def3ff;
+    box-shadow: inset 0 0 0 calc(var(--u) * 2) rgba(255, 255, 255, 0.9);
   }
 
-  /* The page */
+  /* Ribbon tabs */
+  .tabs {
+    position: relative;
+    flex: none;
+    height: calc(var(--u) * 62);
+    background: #f5f5f5;
+    border-bottom: calc(var(--u) * 2) solid #d2d0ce;
+    box-sizing: content-box;
+    overflow: hidden;
+    color: #242424;
+  }
+
+  /* Document canvas */
   .canvas {
-    padding: 32px 20px 64px;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    background: #f5f5f5;
+    padding: calc(var(--u) * 59) 0;
   }
   .page {
-    max-width: 960px;
-    aspect-ratio: 8.5 / 11;
+    position: relative;
+    width: calc(var(--u) * 1224);
+    height: calc(var(--u) * 1584);
     margin: 0 auto;
-    background: var(--page);
-    padding: 84px 80px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10), 0 10px 30px rgba(0, 0, 0, 0.06);
-  }
-  h1 {
-    font-family: var(--display);
-    font-weight: 400;
-    font-size: 27px;
-    line-height: 1.25;
-    color: var(--heading);
-    margin-bottom: 20px;
+    padding: calc(var(--u) * 144);
+    background: #ffffff;
+    box-shadow:
+      0 0 0 calc(var(--u) * 2) #c6c6c6,
+      calc(var(--u) * 3) calc(var(--u) * 4) calc(var(--u) * 8) rgba(0, 0, 0, 0.06);
   }
   .video {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-    background: #000;
+    background: #fefefe;
+    overflow: hidden;
   }
-  .video iframe {
+  .video video {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
+    background: transparent;
+  }
+  .poster {
+    position: absolute;
+    inset: -2px;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
     border: 0;
+    padding: 0;
+    background: #fefefe;
+    cursor: pointer;
+    display: block;
+    -webkit-tap-highlight-color: transparent;
   }
-  .caret {
-    margin-top: 14px;
-    height: 22px;
+  .poster[hidden] { display: none; }
+  .poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .play {
+    position: absolute;
+    left: 4%;
+    top: 67%;
+    width: 11%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
   }
-  .caret::before {
-    content: "";
-    display: inline-block;
-    width: 1.5px;
-    height: 20px;
-    background: var(--ink);
-    animation: blink 1.06s steps(1) infinite;
-  }
-  @keyframes blink { 50% { opacity: 0; } }
-  @media (prefers-reduced-motion: reduce) {
-    .caret::before { animation: none; }
+  .play svg { width: 36%; height: 36%; margin-left: 8%; fill: #ffffff; }
+  .poster:hover .play,
+  .poster:focus-visible .play { opacity: 1; }
+  @media (hover: none) {
+    .play { opacity: 0.85; }
   }
 
   /* Status bar */
   .status {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 28px;
-    background: var(--chrome);
-    border-top: 1px solid var(--chrome-line);
-    color: var(--chrome-ink);
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
+    position: relative;
+    flex: none;
+    height: calc(var(--u) * 54);
+    background: #f5f5f5;
+    border-top: calc(var(--u) * 2) solid #d1d1d1;
+    box-sizing: content-box;
+    color: #606060;
   }
+  .gi { stroke: #606060; }
+  .viewbtn { background: #b8b8b8; border-radius: calc(var(--u) * 10); }
+  .zoom {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: calc(var(--u) * 406);
+    height: 100%;
+  }
+  .track { background: #ababab; border-radius: 999px; }
+  .knob {
+    background: #ffffff;
+    border-radius: 999px;
+    box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 4) rgba(0, 0, 0, 0.22), 0 0 0 calc(var(--u) * 0.5) rgba(0, 0, 0, 0.08);
+  }
+  .bar { background: #606060; border-radius: 999px; }
 
-  @media (max-width: 640px) {
-    .tabs { gap: 16px; padding: 0 14px; }
-    .canvas { padding: 14px 10px 40px; }
-    .page { padding: 32px 24px; }
-    h1 { font-size: 20px; margin-bottom: 14px; }
+  /* iPhone and other small screens: the window becomes the whole screen,
+     the page fits the width, and the video plays full screen when tapped. */
+  @media (max-width: 600px), (max-height: 500px) {
+    body { display: block; background: #f5f5f5; }
+    .win {
+      --u: calc(min(100vw, 100vh) / 930);
+      width: 100%;
+      height: 100vh;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .hide-sm { display: none !important; }
+    .canvas { padding: 10px; }
+    .page {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 8.5 / 11;
+      max-width: calc((100vh - var(--u) * 196 - 24px) / 0.56);
+      padding: 5.5%;
+    }
+    @supports (height: 100dvh) {
+      .win {
+        --u: calc(min(100vw, 100dvh) / 930);
+        height: 100dvh;
+      }
+      .page { max-width: calc((100dvh - var(--u) * 196 - 24px) / 0.56); }
+    }
   }
 </style>
 </head>
 <body>
-  <div class="titlebar">Role Plays.docx</div>
+<div class="win">
+
+  <header class="titlebar" aria-hidden="true">
+    <span class="el light red" style="--x:24;--y:26;--w:28;--h:28"></span>
+    <span class="el light yellow" style="--x:70;--y:26;--w:28;--h:28"></span>
+    <span class="el light green" style="--x:116;--y:26;--w:28;--h:28"></span>
+
+    <span class="t autosave" style="--x:296;--cy:40;--fs:23.5">AutoSave</span>
+    <span class="el toggle" style="--x:306;--y:22;--w:76;--h:36"></span>
+
+    <svg class="el wi" style="--x:402;--y:24;--w:28;--h:30" viewBox="0 0 28 30" stroke-width="2.6">
+      <path d="M3 13 L14 3 L25 13 V27 H17.5 V19 H10.5 V27 H3 Z"/>
+    </svg>
+    <svg class="el wi" style="--x:458;--y:26;--w:28;--h:28" viewBox="0 0 28 28" stroke-width="2.6">
+      <path d="M5 2 H20 L26 8 V23 A3 3 0 0 1 23 26 H5 A3 3 0 0 1 2 23 V5 A3 3 0 0 1 5 2 Z"/>
+      <path d="M8 2 V9 H18 V2"/>
+      <path d="M7 26 V17 H21 V26"/>
+    </svg>
+    <svg class="el wi" style="--x:516;--y:24;--w:26;--h:32" viewBox="0 0 26 32" stroke-width="2.6">
+      <path d="M10 4 L3 11 L10 18"/>
+      <path d="M3 11 H14 A9 9 0 0 1 14 29 H10"/>
+    </svg>
+    <svg class="el wi hide-sm" style="--x:562;--y:36;--w:12;--h:9" viewBox="0 0 12 9" stroke-width="2.4">
+      <path d="M1.5 1.5 L6 6.5 L10.5 1.5"/>
+    </svg>
+    <svg class="el wi hide-sm" style="--x:594;--y:26;--w:28;--h:28;opacity:.45" viewBox="0 0 28 28" stroke-width="2.6">
+      <path d="M23.5 9 A11 11 0 1 0 25 15"/>
+      <path d="M24 2.5 V9.5 H17"/>
+    </svg>
+    <svg class="el wi hide-sm" style="--x:647;--y:30;--w:27;--h:21" viewBox="0 0 27 21" stroke-width="2.8">
+      <path d="M3 3 L11 10.5 L3 18"/>
+      <path d="M15 3 L23 10.5 L15 18"/>
+    </svg>
+
+    <div class="rgroup">
+      <svg class="sz wi comment hide-sm" style="--w:32;--h:30" viewBox="0 0 32 30" stroke-width="2.6">
+        <path d="M6 3 H26 A4 4 0 0 1 30 7 V18 A4 4 0 0 1 26 22 H14 L8 28 V22 H6 A4 4 0 0 1 2 18 V7 A4 4 0 0 1 6 3 Z"/>
+      </svg>
+      <span class="pill editing">
+        <svg class="sz wi" style="--w:32;--h:32" viewBox="0 0 32 32" stroke-width="2.6">
+          <path d="M22 4 L28 10 L11 27 L3.5 29 L5 21 Z"/>
+          <path d="M18 8 L24 14"/>
+        </svg>
+        <span class="label">Editing</span>
+        <svg class="sz wi" style="--w:16;--h:9" viewBox="0 0 16 9" stroke-width="2.4">
+          <path d="M2 1.5 L8 7.5 L14 1.5"/>
+        </svg>
+      </span>
+      <span class="pill share hide-sm">
+        <svg class="sz" style="--w:32;--h:30" viewBox="0 0 32 30" stroke-width="2.5">
+          <path d="M12 8 H7 A4 4 0 0 0 3 12 V23 A4 4 0 0 0 7 27 H23 A4 4 0 0 0 27 23 V20"/>
+          <path d="M12 20 C13 13 18 9.5 27 9.5"/>
+          <path d="M21.5 4 L27 9.5 L21.5 15"/>
+        </svg>
+        <span class="label">Share</span>
+        <svg class="sz" style="--w:16;--h:9" viewBox="0 0 16 9" stroke-width="2.4">
+          <path d="M2 1.5 L8 7.5 L14 1.5"/>
+        </svg>
+      </span>
+      <span class="circle search hide-sm">
+        <svg class="sz wi" style="--w:28;--h:28" viewBox="0 0 28 28" stroke-width="2.6">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M19 19 L26 26"/>
+        </svg>
+      </span>
+      <span class="circle avatar hide-sm">
+        <svg class="sz" style="--w:30;--h:30" viewBox="0 0 30 30">
+          <defs>
+            <linearGradient id="spark" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#2c6be0"/>
+              <stop offset="1" stop-color="#8a5cf0"/>
+            </linearGradient>
+          </defs>
+          <path fill="url(#spark)" d="M15 2 C16 10 20 14 28 15 C20 16 16 20 15 28 C14 20 10 16 2 15 C10 14 14 10 15 2 Z"/>
+        </svg>
+      </span>
+    </div>
+  </header>
+
   <nav class="tabs" aria-hidden="true">
-    <span>File</span>
-    <span class="on">Home</span>
-    <span>Insert</span>
-    <span>Draw</span>
-    <span>Design</span>
-    <span>Layout</span>
-    <span>References</span>
-    <span>Mailings</span>
-    <span>Review</span>
-    <span>View</span>
+    <span class="t" style="--x:42;--cy:28.5;--fs:25.5">Home</span>
+    <span class="t" style="--x:162;--cy:28.5;--fs:25.5">Insert</span>
+    <span class="t" style="--x:279;--cy:28.5;--fs:25.5">Draw</span>
+    <span class="t" style="--x:390;--cy:28.5;--fs:25.5">Design</span>
+    <span class="t" style="--x:522;--cy:28.5;--fs:25.5">Layout</span>
+    <span class="t" style="--x:653;--cy:28.5;--fs:25.5">References</span>
+    <span class="t" style="--x:840;--cy:28.5;--fs:25.5">Mailings</span>
+    <span class="t" style="--x:990;--cy:28.5;--fs:25.5">Review</span>
+    <span class="t" style="--x:1122;--cy:28.5;--fs:25.5">View</span>
   </nav>
 
   <div class="canvas">
     <main class="page">
-      <h1>Emily Doing Role Plays Inside a Word Doc</h1>
       <div class="video">
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/IAvwS4HZ6Rw?rel=0&playsinline=1"
-          title="Emily Doing Role Plays Inside a Word Doc"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen></iframe>
+        <video id="v" src="assets/emily-role-plays.mp4" preload="metadata" title="Emily Role Plays Inside a Word Doc"></video>
+        <button class="poster" type="button" aria-label="Play Emily Role Plays Inside a Word Doc">
+          <img src="assets/poster.jpg" alt="">
+          <span class="play"><svg viewBox="0 0 24 24"><path d="M5 3 L21 12 L5 21 Z"/></svg></span>
+        </button>
       </div>
-      <p class="caret" aria-hidden="true"></p>
     </main>
   </div>
 
   <footer class="status" aria-hidden="true">
-    <span>Page 1 of 1</span>
-    <span>100%</span>
+    <span class="t" style="--x:50;--cy:26;--fs:24">Page 1 of 1</span>
+    <span class="t" style="--x:212;--cy:26;--fs:24">0 words</span>
+
+    <svg class="el gi hide-sm" style="--x:341;--y:11;--w:35;--h:31" viewBox="0 0 35 31" stroke-width="2.2">
+      <circle cx="10" cy="8" r="5"/>
+      <path d="M2 27 A8 8 0 0 1 18 27"/>
+      <circle cx="22.5" cy="7" r="4.5"/>
+      <path d="M33 16 L23 26 L19.5 27.5 L21 24 L31 14 Z"/>
+    </svg>
+    <svg class="el gi hide-sm" style="--x:412;--y:10;--w:30;--h:34" viewBox="0 0 30 34" stroke-width="2.2">
+      <path d="M17 32 H24 A3 3 0 0 0 27 29 V10 L19 2 H8 A3 3 0 0 0 5 5 V17"/>
+      <path d="M19 2 V10 H27"/>
+      <circle cx="9" cy="25" r="7" fill="#606060" stroke="none"/>
+      <path d="M5.6 25.2 L8 27.6 L12.4 22.6" stroke="#f5f5f5" stroke-width="2"/>
+    </svg>
+
+    <div class="hide-sm">
+      <svg class="el gi" style="--x:554;--y:14;--w:24;--h:24" viewBox="0 0 24 24" stroke-width="2.2">
+        <path d="M14 2 H22 V10"/>
+        <path d="M22 2 L13.5 10.5"/>
+        <path d="M10 22 H2 V14"/>
+        <path d="M2 22 L10.5 13.5"/>
+      </svg>
+      <span class="t" style="--x:603;--cy:26;--fs:24">Focus</span>
+      <span class="el viewbtn" style="--x:696;--y:4;--w:62;--h:44"></span>
+      <svg class="el" style="--x:714;--y:10;--w:24;--h:32" viewBox="0 0 24 32">
+        <path d="M3 1 H15 L23 9 V29 A2 2 0 0 1 21 31 H3 A2 2 0 0 1 1 29 V3 A2 2 0 0 1 3 1 Z" fill="#424242"/>
+        <path d="M5.5 14 H18.5 M5.5 18.5 H18.5 M5.5 23 H18.5" stroke="#b8b8b8" stroke-width="2"/>
+      </svg>
+      <svg class="el gi" style="--x:784;--y:10;--w:32;--h:32" viewBox="0 0 32 32" stroke-width="2.2">
+        <circle cx="16" cy="16" r="14"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14"/>
+        <path d="M2 16 H30"/>
+        <path d="M4.5 9 H27.5 M4.5 23 H27.5"/>
+      </svg>
+      <svg class="el gi" style="--x:856;--y:14;--w:32;--h:22" viewBox="0 0 32 22" stroke-width="2.2">
+        <path d="M2 2 H30 M2 8 H24 M2 14 H30 M2 20 H18"/>
+      </svg>
+      <svg class="el gi" style="--x:928;--y:10;--w:32;--h:32" viewBox="0 0 32 32" stroke-width="2.2">
+        <path d="M2 6 H14 M2 12 H11 M2 18 H8 M2 29 H12"/>
+        <path d="M26 3 L30 7 L15 22 L9.5 23.5 L11 18 Z"/>
+      </svg>
+    </div>
+
+    <div class="zoom">
+      <span class="el bar" style="--x:0;--y:25.1;--w:16;--h:1.8"></span>
+      <span class="el track" style="--x:30;--y:23;--w:200;--h:8"></span>
+      <span class="el knob" style="--x:112;--y:12;--w:36;--h:28"></span>
+      <span class="el bar" style="--x:244;--y:25.1;--w:16;--h:1.8"></span>
+      <span class="el bar" style="--x:251.1;--y:18;--w:1.8;--h:16"></span>
+      <span class="t" style="--x:301;--cy:26;--fs:24">100%</span>
+    </div>
   </footer>
+
+</div>
+
+<script>
+  var video = document.getElementById("v");
+  var poster = document.querySelector(".poster");
+
+  // Tap or click the thumbnail to play. On iPhone the video opens full screen.
+  poster.addEventListener("click", function () {
+    poster.hidden = true;
+    video.controls = true;
+    var p = video.play();
+    if (p && p.catch) p.catch(function () {});
+  });
+
+  // When it finishes, go back to the thumbnail.
+  video.addEventListener("ended", function () {
+    video.controls = false;
+    video.currentTime = 0;
+    poster.hidden = false;
+  });
+</script>
 </body>
 </html>
