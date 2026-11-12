@@ -240,23 +240,20 @@
   .poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .play {
     position: absolute;
-    left: 4%;
-    top: 67%;
-    width: 11%;
+    left: 50%;
+    top: 50%;
+    width: 14%;
     aspect-ratio: 1;
     border-radius: 50%;
     background: rgba(0, 0, 0, 0.55);
+    transform: translate(-50%, -50%);
     display: grid;
     place-items: center;
-    opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: background 0.2s ease;
   }
   .play svg { width: 36%; height: 36%; margin-left: 8%; fill: #ffffff; }
   .poster:hover .play,
-  .poster:focus-visible .play { opacity: 1; }
-  @media (hover: none) {
-    .play { opacity: 0.85; }
-  }
+  .poster:focus-visible .play { background: rgba(0, 0, 0, 0.72); }
 
   /* Status bar */
   .status {
